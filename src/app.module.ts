@@ -5,7 +5,10 @@ import { ConfigModule } from '@nestjs/config';
 import { DbModule } from './db/db.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ envFilePath: '.env' }), DbModule],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    DbModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

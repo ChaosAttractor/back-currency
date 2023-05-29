@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('currency')
+  getCurrency(): Promise<any> {
+    return this.appService.getCurrency();
+  }
 }
