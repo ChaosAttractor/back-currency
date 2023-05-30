@@ -22,7 +22,9 @@ export class AppService {
   }
 
   async getDaily(): Promise<string[]> {
-    const res = await this.conn.query('SELECT * FROM daily');
+    const res = await this.conn.query(
+      'SELECT * FROM daily ORDER BY id DESC LIMIT 1',
+    );
     return res.rows;
   }
 
