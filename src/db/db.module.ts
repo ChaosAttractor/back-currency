@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { Pool } from 'pg';
 import { PG_CONNECTION } from '../constants';
+import * as process from 'process';
 
 const dbProvider = {
   provide: PG_CONNECTION,
@@ -9,7 +10,7 @@ const dbProvider = {
     host: 'localhost',
     database: 'currency',
     password: '1234',
-    port: '5432',
+    port: parseInt(process.env.PG_PORT),
   }),
 };
 

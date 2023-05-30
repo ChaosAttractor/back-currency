@@ -11,7 +11,12 @@ export class AppController {
   }
 
   @Get('currency')
-  getCurrency(): Promise<any> {
+  getCurrency(): Promise<string[]> {
     return this.appService.getCurrency();
+  }
+
+  @Get('daily')
+  getDaily(): Promise<string[]> {
+    return this.appService.getDaily();
   }
 }
