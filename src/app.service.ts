@@ -4,6 +4,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+import { config } from 'dotenv';
+config();
 
 @Injectable()
 export class AppService {
@@ -31,7 +33,7 @@ export class AppService {
   @Cron(CronExpression.EVERY_30_MINUTES)
   async handleCron(): Promise<string[]> {
     const { data } = await firstValueFrom(
-      this.httpService.get('https://www.cbr-xml-daily.ru/latest.js').pipe(
+      this.httpService.get(`${process.env.API_URL}/latest.js`).pipe(
         catchError((error: AxiosError) => {
           throw `${error} Что-то пошло не так`;
         }),
@@ -48,7 +50,7 @@ export class AppService {
   @Cron(CronExpression.EVERY_DAY_AT_10PM)
   async daily(): Promise<string[]> {
     const { data } = await firstValueFrom(
-      this.httpService.get('https://www.cbr-xml-daily.ru/daily_json.js').pipe(
+      this.httpService.get(`${process.env.API_URL}/daily_json.js`).pipe(
         catchError((error: AxiosError) => {
           throw `${error} Что-то пошло не так`;
         }),
