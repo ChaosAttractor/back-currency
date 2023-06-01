@@ -19,7 +19,7 @@ export class AppService {
   }
 
   async getCurrency(): Promise<string[]> {
-    const res = await this.conn.query('SELECT * FROM currency');
+    const res = await this.conn.query('SELECT * FROM currency ORDER BY id DESC LIMIT 1');
     return res.rows;
   }
 
