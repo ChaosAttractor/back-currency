@@ -14,7 +14,7 @@ npm run start:dev
 
 также создайте ```.env``` файл в корневой папке проекта
 ```
-PG_HOST
+PG_HOST=postgres(название контейнера)
 PG_USER
 PG_DB
 PG_PASSWORD
