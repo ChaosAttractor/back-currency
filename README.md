@@ -1,3 +1,31 @@
+# back-currency
+
+
+## Команды для запуска
+
+установка зависимостей
+```
+npm i
+```
+запуск в режиме разработки
+```
+npm run start:dev
+```
+
+также создайте ```.env``` файл в корневой папке проекта
+```
+PG_HOST
+PG_USER
+PG_DB
+PG_PASSWORD
+PG_PORT
+PORT
+API_URL=https://www.cbr-xml-daily.ru/
+```
+
+
+
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
