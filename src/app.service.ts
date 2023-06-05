@@ -30,7 +30,7 @@ export class AppService {
     return res.rows;
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_5_SECONDS)
   async handleCron(): Promise<string[]> {
     const { data } = await firstValueFrom(
       this.httpService.get(`${process.env.API_URL}/latest.js`).pipe(
@@ -47,7 +47,7 @@ export class AppService {
     return res;
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_10PM)
+  @Cron(CronExpression.EVERY_5_SECONDS)
   async daily(): Promise<string[]> {
     const { data } = await firstValueFrom(
       this.httpService.get(`${process.env.API_URL}/daily_json.js`).pipe(
