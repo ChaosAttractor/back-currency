@@ -1,68 +1,45 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PG_CONNECTION } from './constants';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
-import { AxiosError } from 'axios';
-import { config } from 'dotenv';
-config();
+import { firstValueFrom } from 'rxjs';
+import Valute from './interfaces/Valute';
 
 @Injectable()
 export class AppService {
   constructor(
-    @Inject(PG_CONNECTION) private conn: any,
+    @Inject('PG_CONNECTION') private conn: any,
     private readonly httpService: HttpService,
   ) {}
 
-  getHello(): string {
-    return 'Hello World!';
-  }
-
-  async getCurrency(): Promise<string[]> {
-    const res = await this.conn.query('SELECT * FROM currency ORDER BY id DESC LIMIT 1');
+  async getCurrency(): Promise<Valute[]> {
+    const res = await this.conn.query('SELECT * FROM currency');
     return res.rows;
   }
 
-  async getDaily(): Promise<string[]> {
-    const res = await this.conn.query(
-      'SELECT * FROM daily ORDER BY id DESC LIMIT 1',
-    );
-    return res.rows;
+  async fillCurrency(): Promise<void> {
+    try {
+      const { data } = await firstValueFrom(
+        this.httpService.get(`${process.env.API_URL}/daily_json.js`).pipe(),
+      );
+
+      await this.conn.query('TRUNCATE TABLE currency');
+      const valutes = Object.keys(data.Valute).map((key) => {
+        return data.Valute[key];
+      });
+
+      for (const valute of valutes) {
+        await this.conn.query(
+          `INSERT INTO currency (id, "NumCode", "CharCode", "Nominal", "Name", "Value", "Previous")
+            VALUES ('${valute.ID}', '${valute.NumCode}','${valute.CharCode}','${valute.Nominal}','${valute.Name}','${valute.Value}','${valute.Previous}')`,
+        );
+      }
+    } catch (err) {
+      console.log(`Что-то пошло не так ${err}`);
+    }
   }
 
   @Cron(CronExpression.EVERY_5_SECONDS)
-  async handleCron(): Promise<string[]> {
-    const { data } = await firstValueFrom(
-      this.httpService.get(`${process.env.API_URL}/latest.js`).pipe(
-        catchError((error: AxiosError) => {
-          throw `${error} Что-то пошло не так`;
-        }),
-      ),
-    );
-    const res = await this.conn.query(
-      `INSERT INTO currency (date, timestamp, base, rate) VALUES ('${
-        data.date
-      }','${data.timestamp}','${data.base}','${JSON.stringify(data.rates)}')`,
-    );
-    return res;
-  }
-
-  @Cron(CronExpression.EVERY_5_SECONDS)
-  async daily(): Promise<string[]> {
-    const { data } = await firstValueFrom(
-      this.httpService.get(`${process.env.API_URL}/daily_json.js`).pipe(
-        catchError((error: AxiosError) => {
-          throw `${error} Что-то пошло не так`;
-        }),
-      ),
-    );
-    const res = await this.conn.query(
-      `INSERT INTO daily (date, previousdate, timestamp, valute) VALUES ('${
-        data.Date
-      }','${data.PreviousDate}','${data.Timestamp}','${JSON.stringify(
-        data.Valute,
-      )}')`,
-    );
-    return res;
+  handleCron(): void {
+    this.fillCurrency();
   }
 }

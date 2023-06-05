@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { Pool } from 'pg';
-import { PG_CONNECTION } from '../constants';
 
 const dbProvider = {
-  provide: PG_CONNECTION,
+  provide: 'PG_CONNECTION',
   useValue: new Pool({
     user: process.env.POSTGRES_USER,
     host: process.env.POSTGRES_HOST,

@@ -1,17 +1,9 @@
-CREATE TABLE IF NOT EXISTS currency
-(
-    id SERIAL NOT NULL PRIMARY KEY,
-    "date" DATE,
-    "timestamp" INT,
-    base CHARACTER VARYING(3),
-    rate TEXT
-);
-
-CREATE TABLE IF NOT EXISTS daily
-(
-    id SERIAL NOT NULL PRIMARY KEY,
-    "date" DATE,
-    previousdate DATE,
-    "timestamp" DATE,
-    valute TEXT
+CREATE TABLE IF NOT EXISTS currency (
+    id CHARACTER VARYING(7) NOT NULL PRIMARY KEY,
+    "NumCode" INT NOT NULL,
+    "CharCode" CHARACTER VARYING(9) NOT NULL,
+    "Nominal" INT NOT NULL,
+    "Name" CHARACTER VARYING(50) NOT NULL,
+    "Value" REAL NOT NULL,
+    "Previous" REAL NOT NULL
 );

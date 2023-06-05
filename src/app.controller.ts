@@ -1,22 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import Valute from './interfaces/Valute';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
   @Get('currency')
-  getCurrency(): Promise<string[]> {
+  getCurrency(): Promise<Valute[]> {
     return this.appService.getCurrency();
-  }
-
-  @Get('daily')
-  getDaily(): Promise<string[]> {
-    return this.appService.getDaily();
   }
 }

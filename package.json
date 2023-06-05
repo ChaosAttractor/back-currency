@@ -19,7 +19,6 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/schedule": "^2.2.2",
-    "axios": "^1.4.0",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
