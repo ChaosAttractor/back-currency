@@ -4,6 +4,7 @@ import { HttpModule } from '@nestjs/axios';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Valute } from './models/Valute.model';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { AppService } from './app.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [],
+      models: [Valute],
     }),
     ScheduleModule.forRoot(),
     HttpModule,

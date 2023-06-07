@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
+import { Valute } from './models/Valute.model';
 
 @Injectable()
 export class AppService {
@@ -10,11 +11,12 @@ export class AppService {
     private sequelize: Sequelize,
     private readonly httpService: HttpService,
   ) {}
-  // todo Valute[] не дружит((( Object[] тоже. Тип res[unknown[],unknown] + приходит странно
-  // typeof res в логи кидает Object
-  async getCurrency(): Promise<unknown[]> {
-    const [res] = await this.sequelize.query('SELECT * FROM currency');
-    return res;
+
+  async getCurrency(): Promise<Valute[]> {
+    return await this.sequelize.query('SELECT * FROM currency', {
+      model: Valute,
+      mapToModel: true,
+    });
   }
 
   async fillCurrency(): Promise<void> {
