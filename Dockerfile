@@ -8,4 +8,6 @@ RUN npm install
 
 COPY . .
 
+RUN npx sequelize-cli db:migrate
+
 CMD ["npm","run","start:dev"]
