@@ -38,7 +38,7 @@ export class AppService {
     }
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   handleCron(): void {
     this.fillCurrency();
   }
