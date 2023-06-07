@@ -7,7 +7,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('currency')
-  getCurrency(): Promise<Valute[]> {
+  getCurrency(): Promise<unknown[]> {
     return this.appService.getCurrency();
   }
 }

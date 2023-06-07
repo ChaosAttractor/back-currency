@@ -4,10 +4,8 @@ import { HttpModule } from '@nestjs/axios';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DbModule } from './db/db.module';
 
 @Module({
-  // todo проверить
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
@@ -20,7 +18,6 @@ import { DbModule } from './db/db.module';
     }),
     ScheduleModule.forRoot(),
     HttpModule,
-    DbModule,
   ],
   controllers: [AppController],
   providers: [AppService],
