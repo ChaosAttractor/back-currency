@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
-import Valute from './interfaces/Valute';
 
 @Injectable()
 export class AppService {
@@ -12,10 +11,10 @@ export class AppService {
     private readonly httpService: HttpService,
   ) {}
   // todo Valute[] не дружит((( Object[] тоже. Тип res[unknown[],unknown] + приходит странно
+  // typeof res в логи кидает Object
   async getCurrency(): Promise<unknown[]> {
-    const res = await this.sequelize.query('SELECT * FROM currency');
-    console.log(typeof res[0]); // в логи кидает Object
-    return res[0];
+    const [res] = await this.sequelize.query('SELECT * FROM currency');
+    return res;
   }
 
   async fillCurrency(): Promise<void> {

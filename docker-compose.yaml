@@ -1,6 +1,19 @@
 version: '3.9'
 services:
-   postgres:
+  main:
+    container_name: main
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - '127.0.0.1:8080:8080'
+    depends_on:
+      - postgres
+    command: sh -c 'wait && npx sequelize-cli db:migrate && npm run start:dev'
+    restart: always
+
+  postgres:
     container_name: postgres
     image: postgres:latest
     env_file:
@@ -10,15 +23,3 @@ services:
     ports:
       - '127.0.0.1:5432:5432'
 
-   main:
-     container_name: main
-     build:
-       context: .
-     env_file:
-       - .env
-     ports:
-       - '127.0.0.1:8080:8080'
-     depends_on:
-       - postgres
-     command: sh -c 'wait && npx sequelize-cli db:migrate && npm run start:dev'
-     restart: always
