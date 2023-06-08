@@ -4,6 +4,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
 import { Valute } from './models/Valute.model';
+import { format } from 'pg-format';
 
 @Injectable()
 export class AppService {
@@ -26,16 +27,25 @@ export class AppService {
       );
 
       await this.sequelize.query('TRUNCATE TABLE currency');
-      const valutes = Object.keys(data.Valute).map((key) => {
-        return data.Valute[key];
-      });
 
-      for (const valute of valutes) {
-        await this.sequelize.query(
-          `INSERT INTO currency (id, "NumCode", "CharCode", "Nominal", "Name", "Value", "Previous")
-            VALUES ('${valute.ID}', '${valute.NumCode}','${valute.CharCode}','${valute.Nominal}','${valute.Name}','${valute.Value}','${valute.Previous}')`,
-        );
-      }
+      const values = [];
+      Object.keys(data.Valute).map((key) => {
+        values.push([
+          data.Valute[key].ID,
+          data.Valute[key].NumCode,
+          data.Valute[key].CharCode,
+          data.Valute[key].Nominal,
+          data.Valute[key].Name,
+          data.Valute[key].Value,
+          data.Valute[key].Previous,
+        ]);
+      });
+      await this.sequelize.query(
+        format(
+          `INSERT INTO currency (id, "NumCode", "CharCode", "Nominal", "Name", "Value", "Previous") VALUES %L`,
+          values,
+        ),
+      );
     } catch (err) {
       console.log(`Что-то пошло не так ${err}`);
     }

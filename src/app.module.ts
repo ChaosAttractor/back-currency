@@ -21,6 +21,6 @@ import { Valute } from './models/Valute.model';
     HttpModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, Valute],
 })
 export class AppModule {}
