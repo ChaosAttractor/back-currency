@@ -10,5 +10,5 @@ RUN npm install
 
 COPY . .
 
-#todo нужно более хорошее решение для реализации миграций
+#вернуть
 #CMD ["npm","run","start:dev"]

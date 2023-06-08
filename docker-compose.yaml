@@ -1,5 +1,7 @@
 version: '3.9'
 services:
+#  todo миграции делаем 1 раз, можно скриптом, можно руками.
+#  todo volume пробросить исходники
   main:
     container_name: main
     build:
@@ -19,7 +21,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./postgres/pg:/var/lib/postgresql/data
+      - ../postgres/pg:/var/lib/postgresql/data
     ports:
       - '127.0.0.1:5432:5432'
 

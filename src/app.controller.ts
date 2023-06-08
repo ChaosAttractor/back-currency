@@ -6,6 +6,7 @@ import { Valute } from './models/Valute.model';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  // todo описать метод
   @Get('currency')
   getCurrency(): Promise<Valute[]> {
     return this.appService.getCurrency();

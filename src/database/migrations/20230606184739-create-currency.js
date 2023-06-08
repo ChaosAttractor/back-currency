@@ -36,6 +36,7 @@ module.exports = {
     });
   },
 
+  // todo опастно
   down: async (queryInterface, Sequelize) => {
     return queryInterface.dropTable('currency');
   },

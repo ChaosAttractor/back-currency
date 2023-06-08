@@ -3,8 +3,11 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
-import { format } from 'pg-format';
 import { Valute } from './models/Valute.model';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// todo убрать
+const format = require('pg-format');
 
 @Injectable()
 export class AppService {
@@ -12,7 +15,7 @@ export class AppService {
     private sequelize: Sequelize,
     private readonly httpService: HttpService,
   ) {}
-
+  // todo jsdoc
   async getCurrency(): Promise<Valute[]> {
     return await this.sequelize.query('SELECT * FROM currency', {
       model: Valute,
@@ -28,6 +31,7 @@ export class AppService {
 
       await this.sequelize.query('TRUNCATE TABLE currency');
 
+      // todo сделать массив строк
       const values = [];
       Object.keys(data.Valute).map((key) => {
         values.push([
@@ -40,18 +44,18 @@ export class AppService {
           data.Valute[key].Previous,
         ]);
       });
+
+      const formatedValues = format(`%L`, values);
+
       await this.sequelize.query(
-        format(
-          `INSERT INTO currency (id, "NumCode", "CharCode", "Nominal", "Name", "Value", "Previous") VALUES %L`,
-          values,
-        ),
+        `INSERT INTO currency VALUES ${formatedValues}`,
       );
     } catch (err) {
       console.log(`Что-то пошло не так ${err}`);
     }
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron(): void {
     this.fillCurrency();
   }
