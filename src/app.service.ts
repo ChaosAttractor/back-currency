@@ -3,8 +3,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
-import { Valute } from './models/Valute.model';
 import { format } from 'pg-format';
+import { Valute } from './models/Valute.model';
 
 @Injectable()
 export class AppService {
