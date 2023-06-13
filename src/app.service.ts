@@ -5,17 +5,17 @@ import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
 import { Valute } from './models/Valute.model';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-// todo убрать
-const format = require('pg-format');
-
 @Injectable()
 export class AppService {
   constructor(
     private sequelize: Sequelize,
     private readonly httpService: HttpService,
   ) {}
-  // todo jsdoc
+
+  /**
+   * Метод для получения курса валют
+   * @returns {Promise<Valute>[]} Возвращает промис со всеми данными из таблицы currency
+   */
   async getCurrency(): Promise<Valute[]> {
     return await this.sequelize.query('SELECT * FROM currency', {
       model: Valute,
@@ -23,6 +23,10 @@ export class AppService {
     });
   }
 
+  /**
+   * Метод для заполнения таблицы при получении данных с внешней API
+   * @returns {Promise<void>} Ничего не возвращает
+   */
   async fillCurrency(): Promise<void> {
     try {
       const { data } = await firstValueFrom(
@@ -31,30 +35,29 @@ export class AppService {
 
       await this.sequelize.query('TRUNCATE TABLE currency');
 
-      // todo сделать массив строк
-      const values = [];
+      let values = '';
       Object.keys(data.Valute).map((key) => {
-        values.push([
-          data.Valute[key].ID,
-          data.Valute[key].NumCode,
-          data.Valute[key].CharCode,
-          data.Valute[key].Nominal,
-          data.Valute[key].Name,
-          data.Valute[key].Value,
-          data.Valute[key].Previous,
-        ]);
+        values += `('${data.Valute[key].ID}',
+                 ${data.Valute[key].NumCode}, 
+                 '${data.Valute[key].CharCode}', 
+                 ${data.Valute[key].Nominal}, 
+                 '${data.Valute[key].Name}', 
+                 ${data.Valute[key].Value}, 
+                 ${data.Valute[key].Previous}),`;
       });
 
-      const formatedValues = format(`%L`, values);
+      values = values.toString().slice(0, -1) + ';';
 
-      await this.sequelize.query(
-        `INSERT INTO currency VALUES ${formatedValues}`,
-      );
+      await this.sequelize.query(`INSERT INTO currency VALUES ${values}`);
     } catch (err) {
       console.log(`Что-то пошло не так ${err}`);
     }
   }
 
+  /**
+   * Крон вызываемый каждые 5 секунд, который триггерит вызов метода заполнения таблицы
+   * @returns {void} Ничего не возвращает
+   */
   @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron(): void {
     this.fillCurrency();
