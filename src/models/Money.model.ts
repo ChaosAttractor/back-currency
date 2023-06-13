@@ -1,7 +1,7 @@
 import { Column, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table
-export class Valute extends Model {
+export class Money extends Model {
   @PrimaryKey
   @Column
   id: string;

@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { AppService } from './app.service';
-import { Valute } from './models/Valute.model';
+import { Money } from './models/Money.model';
 
 @Controller()
 export class AppController {
@@ -15,7 +15,7 @@ export class AppController {
   @ApiResponse({ status: 404, description: 'Не найдено' })
   @ApiResponse({ status: 500, description: 'Не удалось подключиться' })
   @Get('currency')
-  getCurrency(): Promise<Valute[]> {
+  getCurrency(): Promise<Money[]> {
     return this.appService.getCurrency();
   }
 }

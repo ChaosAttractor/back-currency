@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
-import { Valute } from './models/Valute.model';
+import { Money } from './models/Money.model';
 
 @Injectable()
 export class AppService {
@@ -14,11 +14,11 @@ export class AppService {
 
   /**
    * Метод для получения курса валют
-   * @returns {Promise<Valute>[]} Возвращает промис со всеми данными из таблицы currency
+   * @returns {Promise<Money[]>} Возвращает промис со всеми данными из таблицы currency
    */
-  async getCurrency(): Promise<Valute[]> {
+  async getCurrency(): Promise<Money[]> {
     return await this.sequelize.query('SELECT * FROM currency', {
-      model: Valute,
+      model: Money,
       mapToModel: true,
     });
   }
@@ -56,10 +56,10 @@ export class AppService {
 
   /**
    * Крон вызываемый каждые 5 секунд, который триггерит вызов метода заполнения таблицы
-   * @returns {void} Ничего не возвращает
+   * @returns {Promise<void>} Ничего не возвращает
    */
   @Cron(CronExpression.EVERY_5_SECONDS)
-  handleCron(): void {
-    this.fillCurrency();
+  async handleCron(): Promise<void> {
+    await this.fillCurrency();
   }
 }
