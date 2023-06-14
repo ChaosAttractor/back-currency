@@ -35,6 +35,7 @@ export class AppService {
 
       await this.sequelize.query('TRUNCATE TABLE currency');
 
+      // todo https://sequelize.org/docs/v6/core-concepts/raw-queries/#bind-parameter
       let values = '';
       Object.keys(data.Valute).map((key) => {
         values += `('${data.Valute[key].ID}',

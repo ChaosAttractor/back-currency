@@ -7,6 +7,7 @@ import { Money } from './models/Money.model';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  // todo поправить свагер. Пример - https://api.fesco.com/api/public
   @ApiResponse({
     description: 'Метод для получения курса валют',
   })

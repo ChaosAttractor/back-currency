@@ -1,5 +1,6 @@
 import { Column, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
+// todo name
 @Table
 export class Money extends Model {
   @PrimaryKey
