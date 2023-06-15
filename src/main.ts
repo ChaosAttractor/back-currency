@@ -9,11 +9,12 @@ const bootstrap = async () => {
   const config = new DocumentBuilder()
     .setTitle('currency')
     .setDescription('API для получения курса валют')
-    .setVersion('1.0')
+    .setVersion('1.0.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
+  });
   await app.listen(process.env.PORT || 8080);
 };
 

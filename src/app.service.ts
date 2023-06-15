@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Sequelize } from 'sequelize-typescript';
-import { Money } from './models/Money.model';
+import { Currency } from './models/Currency.model';
 
 @Injectable()
 export class AppService {
@@ -14,11 +14,11 @@ export class AppService {
 
   /**
    * Метод для получения курса валют
-   * @returns {Promise<Money[]>} Возвращает промис со всеми данными из таблицы currency
+   * @returns {Promise<Currency[]>} Возвращает промис со всеми данными из таблицы currency
    */
-  async getCurrency(): Promise<Money[]> {
+  async getCurrency(): Promise<Currency[]> {
     return await this.sequelize.query('SELECT * FROM currency', {
-      model: Money,
+      model: Currency,
       mapToModel: true,
     });
   }
@@ -35,21 +35,22 @@ export class AppService {
 
       await this.sequelize.query('TRUNCATE TABLE currency');
 
-      // todo https://sequelize.org/docs/v6/core-concepts/raw-queries/#bind-parameter
-      let values = '';
+      const values = [];
       Object.keys(data.Valute).map((key) => {
-        values += `('${data.Valute[key].ID}',
-                 ${data.Valute[key].NumCode}, 
-                 '${data.Valute[key].CharCode}', 
-                 ${data.Valute[key].Nominal}, 
-                 '${data.Valute[key].Name}', 
-                 ${data.Valute[key].Value}, 
-                 ${data.Valute[key].Previous}),`;
+        values.push([
+          data.Valute[key].ID,
+          data.Valute[key].NumCode,
+          data.Valute[key].CharCode,
+          data.Valute[key].Nominal,
+          data.Valute[key].Name,
+          data.Valute[key].Value,
+          data.Valute[key].Previous,
+        ]);
       });
 
-      values = values.toString().slice(0, -1) + ';';
-
-      await this.sequelize.query(`INSERT INTO currency VALUES ${values}`);
+      await this.sequelize.query(`INSERT INTO currency VALUES ?`, {
+        replacements: [values],
+      });
     } catch (err) {
       console.log(`Что-то пошло не так ${err}`);
     }
